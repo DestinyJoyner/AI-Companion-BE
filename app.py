@@ -5,6 +5,7 @@ import os
 import google.generativeai as genai
 from data.keywords import keywords
 from data.validations import validate_relevance
+from data.response_formatting import markdown_format
 
 # retrieve apikey value from env file
 load_dotenv()
@@ -25,7 +26,7 @@ def get_completion(prompt, model="gemini-1.5-flash", **kwargs):
     
     # combine prompt with keywords,
     keyword_str = " ".join(keywords)
-    combined_prompt = f"{prompt} Context: {keyword_str}"
+    combined_prompt = f"{prompt} Format: {markdown_format} Context: {keyword_str}"
     
     # Create a generation_config dictionary with default values
     generation_config = {
@@ -36,7 +37,7 @@ def get_completion(prompt, model="gemini-1.5-flash", **kwargs):
     # Update generation_config with any provided kwargs
     generation_config.update(kwargs)
     
-    response = model.generate_content(prompt, generation_config=generation_config)
+    response = model.generate_content(combined_prompt, generation_config=generation_config)
     return response.text
 
 # CAN YOU BEFORE_REQUEST IN FLASK FOR VALIDATIONS ACROSS ALL ROUTES:
@@ -55,7 +56,7 @@ def validate_request():
 @app.route("/api/gemini-data", methods=["POST"])
 def get_gemini_data():
     data = request.get_json()
-    prompt = data.get("prompt")
+    prompt = data.get("prompt") 
     
     # run validation function if not useing before_req above
     # is_relevant = validate_relevance(prompt)

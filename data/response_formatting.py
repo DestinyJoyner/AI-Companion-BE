@@ -1,0 +1,1 @@
+markdown_format = "Make sure to use Markdown formatting: use headers for major sections, list features using bullet points, include bold or italic text where necessary"
